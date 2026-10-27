@@ -30,7 +30,7 @@ void scan_input(char *prompt, char *input_string);
 char *get_command(char *input_string);
 
 void copy_change(char *prompt, char *input_string);
-
+void execute_external_commands(char **args);
 int check_command_type(char *command ,char **external);
 void echo(char *input_string, int status);
 void execute_internal_commands(char *input_string);

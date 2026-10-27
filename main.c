@@ -4,8 +4,10 @@
 int main()
 {
    system("clear");
-   char *external[152];
+   char *external[153];
    char *args[50];
+   int status;
+    pid_t pid;
    extract_external_commands(external);
    char prompt_string[50] = "minishell";
    char input_string[50];
@@ -18,6 +20,33 @@ int main()
     splitstrings(input_string,args);
     char *cmd = get_command(input_string);
     int type = check_command_type(cmd,external);
+    switch(type)
+    {
+       case EXTERNAL:
+        pid = fork();
+        if(pid == 0)
+        {
+          execute_external_commands(args);
+          exit(0);
+        }
+        else if(pid > 0)
+        {
+            waitpid(pid,&status,0);
+        }
+        break;
+
+        case BUILTIN:
+         // execute_internal_commands(input_string);
+          break;
+        case NO_COMMAND:
+          printf("Invalid input\n");
+          break;
+
+
+
+
+
+    }
      
     
 

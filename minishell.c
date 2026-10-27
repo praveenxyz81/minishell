@@ -39,7 +39,7 @@ char *get_command(char *input_string)
 {
    char *cmd = malloc(50);
    int i =0;
-   while(input_string[i] != ' ' && input_string != '\0')
+   while(input_string[i] != ' ' && input_string[i] != '\0')
    {
 
        cmd[i] = input_string[i];
@@ -51,9 +51,7 @@ char *get_command(char *input_string)
 }
 int check_command_type(char *command , char **external)
 {
-   char *builtins[] = {"echo", "printf", "read", "cd", "pwd", "pushd", "popd", "dirs", "let", "eval",
-						"set", "unset", "export", "declare", "typeset", "readonly", "getopts", "source",
-						"exit", "exec", "shopt", "caller", "true", "type", "hash", "bind", "help", NULL};
+   char *builtins[] = {"echo", "cd", "pwd", "exit","jobs","fg","bg", NULL};
    for(int i = 0 ; builtins[i] != NULL ;i++)
    {
        if(strcmp(builtins[i] , command) == 0)
@@ -79,8 +77,7 @@ void splitstrings(char *input_string , char *args[])
    args[i] = strtok(input_string," ");
    while(args[i] != NULL)
    {
-      args[i] = strtok(NULL," ");
       i++;
+      args[i] = strtok(NULL," ");
    }
-
 }
