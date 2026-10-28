@@ -33,7 +33,7 @@ void copy_change(char *prompt, char *input_string);
 void execute_external_commands(char **args);
 int check_command_type(char *command ,char **external);
 void echo(char *input_string, int status);
-void execute_internal_commands(char *input_string);
+void execute_internal_commands(char **args);
 void signal_handler(int sig_num);
 void extract_external_commands(char **external_commands);
 void splitstrings(char *input_string , char *args[]);

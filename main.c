@@ -36,7 +36,7 @@ int main()
         break;
 
         case BUILTIN:
-         // execute_internal_commands(input_string);
+         execute_internal_commands(args);
           break;
         case NO_COMMAND:
           printf("Invalid input\n");
