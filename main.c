@@ -1,6 +1,6 @@
 #include"minishell.h"
 
-
+int exit_status = 0;
 int main()
 {
    system("clear");
@@ -32,6 +32,10 @@ int main()
         else if(pid > 0)
         {
             waitpid(pid,&status,0);
+            if(WIFEXITED(status))
+            {
+                exit_status = WEXITSTATUS(status);
+            }
         }
         break;
 

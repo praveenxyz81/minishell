@@ -25,6 +25,7 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
+extern int exit_status;
 
 void scan_input(char *prompt, char *input_string);
 char *get_command(char *input_string);
