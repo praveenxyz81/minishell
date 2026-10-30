@@ -25,11 +25,16 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-extern int exit_status;
+typedef struct job
+{
+    char        input[50];
+    pid_t       pid;
+    struct job  *link;
+} job_t;
 
+extern int exit_status;
 void scan_input(char *prompt, char *input_string);
 char *get_command(char *input_string);
-
 void copy_change(char *prompt, char *input_string);
 void execute_external_commands(char **args);
 int check_command_type(char *command ,char **external);

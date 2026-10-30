@@ -1,19 +1,22 @@
 #include"minishell.h"
 
 int exit_status = 0;
+pid_t pid;
+char *external[153];
+char *args[50];
+int status;
+char prompt_string[50]= "Minishell";
+
 int main()
 {
    system("clear");
-   char *external[153];
-   char *args[50];
-   int status;
-    pid_t pid;
    extract_external_commands(external);
-   char prompt_string[50] = "minishell";
    char input_string[50];
+   signal(SIGINT,signal_handler);
+   signal(SIGTSTP,signal_handler);
    while(1)
    {
-     printf("%s$ ",prompt_string);
+     printf("%s $",prompt_string);
      scan_input(prompt_string,input_string);
      if(input_string[0] == '\0')
       continue;
@@ -26,6 +29,8 @@ int main()
         pid = fork();
         if(pid == 0)
         {
+          signal(SIGINT,signal_handler);
+          signal(SIGTSTP,signal_handler);
           execute_external_commands(args);
           exit(0);
         }

@@ -81,3 +81,38 @@ void splitstrings(char *input_string , char *args[])
       args[i] = strtok(NULL," ");
    }
 }
+void signal_handler(int sig_num)
+{
+   extern pid_t pid;
+   extern char prompt_string[50];
+     if(sig_num == SIGINT)
+     {
+      if(pid == 0)
+      {
+         printf("\n");
+         
+         printf("%s$ ",prompt_string);
+         fflush(stdout);
+         return;
+      }
+     }
+      if(sig_num == SIGTSTP)
+     {
+      if(pid == 0)
+      {
+         printf("\n");
+         
+         printf("%s$ ",prompt_string);
+         fflush(stdout);
+         return;
+      }
+      if(pid > 0)
+      {
+
+         
+      }
+     }
+
+
+
+}
