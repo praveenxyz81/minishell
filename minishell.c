@@ -1,19 +1,25 @@
-#include"minishell.h"
+#include "minishell.h"
 
 void scan_input(char *prompt, char *input_string)
 {
+    input_string[0] = '\0';
 
-   scanf(" %[^\n]",input_string);
-   if(strncmp(input_string,"PS1=",4) == 0)
-   {
-       if(strchr(input_string,' ') ==NULL)
-       {
-          strncpy(prompt,input_string+4,50-1); 
-          prompt[50-1] = '\0';
-          input_string[0] = '\0';
-       }
+    int ret = scanf(" %49[^\n]", input_string);
+    if (ret == EOF)
+    {
+        clearerr(stdin);
+        return;
+    }
 
-   }
+    if (strncmp(input_string, "PS1=", 4) == 0)
+    {
+        if (strchr(input_string, ' ') == NULL)
+        {
+            strncpy(prompt, input_string + 4, 49);
+            prompt[49] = '\0';
+            input_string[0] = '\0';
+        }
+    }
 }
 void extract_external_commands(char **external_commands)
 {
@@ -87,32 +93,30 @@ void signal_handler(int sig_num)
    extern char prompt_string[50];
      if(sig_num == SIGINT)
      {
-      if(pid == 0)
-      {
-         printf("\n");
-         
-         printf("%s$ ",prompt_string);
-         fflush(stdout);
-         return;
-      }
+          printf("\n");
+          printf("%s $",prompt_string);
+          fflush(stdout);
      }
       if(sig_num == SIGTSTP)
      {
-      if(pid == 0)
-      {
-         printf("\n");
-         
-         printf("%s$ ",prompt_string);
-         fflush(stdout);
-         return;
-      }
-      if(pid > 0)
-      {
-
-         
-      }
+          printf("\n");
+          printf("%s $",prompt_string);
+          fflush(stdout);
      }
 
+      
 
+}
+void insert_first(job_t **head, char *input_string, pid_t pid)
+{
+    job_t *new = malloc(sizeof(job_t));
 
+    if (new == NULL)
+        return;
+
+    strcpy(new->input, input_string);
+    new->pid = pid;
+
+    new->link = *head;
+    *head = new;
 }

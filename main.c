@@ -6,17 +6,19 @@ char *external[153];
 char *args[50];
 int status;
 char prompt_string[50]= "Minishell";
+char input_string[50];
+job_t *head = NULL;
 
 int main()
 {
    system("clear");
    extract_external_commands(external);
-   char input_string[50];
    signal(SIGINT,signal_handler);
    signal(SIGTSTP,signal_handler);
    while(1)
    {
      printf("%s $",prompt_string);
+     fflush(stdout);
      scan_input(prompt_string,input_string);
      if(input_string[0] == '\0')
       continue;
@@ -29,18 +31,31 @@ int main()
         pid = fork();
         if(pid == 0)
         {
-          signal(SIGINT,signal_handler);
-          signal(SIGTSTP,signal_handler);
+           signal(SIGINT,  SIG_DFL);
+           signal(SIGTSTP, SIG_DFL);
+           signal(SIGCHLD, SIG_DFL);
           execute_external_commands(args);
           exit(0);
         }
         else if(pid > 0)
         {
-            waitpid(pid,&status,0);
-            if(WIFEXITED(status))
+            waitpid(pid, &status, WUNTRACED);
+
+            if (WIFSTOPPED(status))
+            {
+                insert_first(&head, input_string, pid);
+                printf("\n[%d] Stopped %s\n", pid, input_string);
+            }
+            else if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
             }
+            else if (WIFSIGNALED(status))
+            {
+                printf("\n");
+            }
+
+            pid = 0;
         }
         break;
 

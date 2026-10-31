@@ -14,6 +14,10 @@ void execute_internal_commands(char **args)
         perror("pwd");
     }
  }
+ else if(strcmp(args[0],"exit") == 0)
+ {
+    exit(0);
+ }
  else if(strcmp(args[0], "cd") == 0)
  {
     char *path = args[1];
@@ -45,6 +49,78 @@ else if (strcmp(args[0], "echo") == 0)
         i++;
     }
     printf("\n");
+}
+else if (strcmp(args[0], "fg") == 0)
+{
+    extern job_t *head;
+    extern int status;
+
+    if (head == NULL)
+    {
+        printf("No stopped jobs\n");
+    }
+    else
+    {
+        job_t *temp = head;
+
+        if (kill(temp->pid, SIGCONT) == -1)
+        {
+            perror("fg");
+        }
+        else
+        {
+            waitpid(temp->pid, &status, WUNTRACED);
+
+            if (WIFSTOPPED(status))
+            {
+                printf("\n[%d] Stopped %s\n",temp->pid, temp->input);
+            }
+            else
+            {
+                head = temp->link;
+                free(temp);
+            }
+        }
+    }
+}
+else if (strcmp(args[0], "bg") == 0)
+{
+    extern job_t *head;
+
+    if (head == NULL)
+    {
+        printf("No stopped jobs\n");
+    }
+    else
+    {
+        if (kill(head->pid, SIGCONT) == -1)
+        {
+            perror("bg");
+        }
+        else
+        {
+            printf("[%d] Running %s\n",head->pid, head->input);
+        }
+    }
+}
+else if (strcmp(args[0], "jobs") == 0)
+{
+    extern job_t *head;
+
+    if (head == NULL)
+    {
+        printf("No jobs\n");
+    }
+    else
+    {
+        job_t *temp = head;
+
+        while (temp != NULL)
+        {
+            printf("[%d] Stopped    %s\n", temp->pid, temp->input);
+            temp = temp->link;
+        }
+    }
 }
 
 }
